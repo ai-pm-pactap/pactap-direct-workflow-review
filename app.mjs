@@ -3,7 +3,7 @@ export function mountViewer({ flows, sourceNames, handoffs, review }) {
 const byId = new Map(flows.map(flow => [flow.id, flow]));
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
-const statusLabels = { agreed: 'Agreed requirement', draft: 'Specified draft', proposed: 'Proposed addition' };
+const statusLabels = { agreed: 'Agreed requirement', draft: 'Approved specification', proposed: 'Approved design extension' };
 const palette = { ink: '#202124', muted: '#666a73', line: '#b4bcc8', brand: '#0a66c2', soft: '#eaf3fd', warning: '#946200' };
 let current = flows[0];
 let zoom = 1;
@@ -78,7 +78,7 @@ function makeDiagram(flow) {
   const height = 72 + (Math.max(...flow.nodes.map(node => node.row)) + 1) * rowHeight;
   const positions = new Map(flow.nodes.map(node => [node.id, { x: 48 + node.col * columnWidth, y: 40 + node.row * rowHeight }]));
   const root = s('svg', { xmlns: NS, viewBox: `0 0 ${width} ${height}`, width, height, role: 'group', 'aria-label': `${flow.title}. ${flow.nodes.length} steps. Equivalent text view is available.` });
-  root.append(s('title', {}, flow.title), s('desc', {}, `${flow.summary} Dashed boxes mark proposed additions. All branches also appear in Text steps.`));
+  root.append(s('title', {}, flow.title), s('desc', {}, `${flow.summary} Dashed boxes mark approved design extensions. All branches also appear in Text steps.`));
   const defs = s('defs');
   const marker = s('marker', { id: 'arrow', markerWidth: 10, markerHeight: 10, refX: 8, refY: 5, orient: 'auto', markerUnits: 'userSpaceOnUse' });
   marker.append(s('path', { d: 'M 1 1 L 9 5 L 1 9 z', fill: palette.muted }));
@@ -215,7 +215,7 @@ function navigate(focus = false) {
   $('phase-summary').textContent = current.summary;
   const decisions = current.nodes.filter(node => node.kind === 'decision').length;
   const proposed = current.nodes.filter(node => node.status === 'proposed').length;
-  $('phase-composition').textContent = `${decisions} ${decisions === 1 ? 'decision' : 'decisions'} · ${proposed} proposed ${proposed === 1 ? 'step' : 'steps'}`;
+  $('phase-composition').textContent = `${decisions} ${decisions === 1 ? 'decision' : 'decisions'} · ${proposed} design-extension ${proposed === 1 ? 'step' : 'steps'}`;
   $('phase-select').value = current.id;
   document.querySelectorAll('#phase-nav a').forEach(link => { if (link.hash === `#${current.id}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
   $('previous').disabled = index === 0;
@@ -269,7 +269,7 @@ $('export').addEventListener('click', () => {
   clone.querySelectorAll('[tabindex]').forEach(node => { node.removeAttribute('tabindex'); node.removeAttribute('role'); });
   const exported = s('svg', { xmlns: NS, viewBox: `0 0 ${geometry.width} ${geometry.height + 152}`, width: geometry.width, height: geometry.height + 152 });
   exported.append(s('rect', { x: 0, y: 0, width: geometry.width, height: geometry.height + 152, fill: '#ffffff' }));
-  const captions = [current.title, 'WORKFLOW REVIEW — product policy approval pending; not a live ordering application.', 'Diagram revision: ' + reviewRevision + ' | Source modules: ' + current.sources.join(', '), 'Legend: Agreed requirement / Specified draft / Proposed addition (dashed border).'];
+  const captions = [current.title, 'WORKFLOW REVIEW — specification approved 2026-09-25; implementation in progress.', 'Diagram revision: ' + reviewRevision + ' | Source modules: ' + current.sources.join(', '), 'Legend: Agreed requirement / Approved specification / Approved extension (dashed).'];
   captions.forEach((text, i) => exported.append(s('text', { x: 48, y: 32 + i * 28, fill: palette.ink, 'font-family': 'Segoe UI, Arial, sans-serif', 'font-size': i === 0 ? 22 : 14 }, text)));
   const diagramGroup = s('g', { transform: 'translate(0 144)' });
   diagramGroup.append(...clone.childNodes); exported.append(diagramGroup);
@@ -291,8 +291,8 @@ try {
   reviewRevision = review.revision;
   $('revision-label').textContent = `Diagram revision ${review.revision}`;
   const record = $('review-record');
-  record.replaceChildren(el('p', `Content cross-check: ${review.reviewedAt}. Product approval: pending.`), el('p', review.scope), el('p', review.maintenance));
-  record.append(el('p', 'Recorded open decisions:'));
+  record.replaceChildren(el('p', `Content cross-check: ${review.reviewedAt}. Specification approval: ${review.productApprovedAt}.`), el('p', review.scope), el('p', review.maintenance));
+  record.append(el('p', 'Operating configuration required before activation:'));
   const list = el('ul'); review.openDecisions.forEach(decision => list.append(el('li', decision))); record.append(list);
   const fingerprints = el('details');
   fingerprints.append(el('summary', 'Reviewed source fingerprints'));
