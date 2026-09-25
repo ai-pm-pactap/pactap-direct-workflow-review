@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pactap Direct buyer journey: reviewable flowcharts from product configuration to delivery, payments and exceptions.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <title>Protected workflow review · Pactap Direct</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./unlock.mjs"></script>
+</head>
+<body>
+<main id="unlock-screen" class="unlock-screen">
+  <div class="unlock-brand">Pactap <span>Direct</span></div>
+  <section class="unlock-panel" aria-labelledby="unlock-title">
+    <svg class="lock-symbol" viewBox="0 0 32 32" width="40" height="40" aria-hidden="true"><rect x="6" y="14" width="20" height="15" rx="3" fill="currentColor"/><path d="M10 14V9a6 6 0 0 1 12 0v5" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="21" r="2" fill="white"/></svg>
+    <h1 id="unlock-title">Open the review workspace</h1>
+    <p class="unlock-intro">Enter the shared passphrase to view the Pactap Direct workflows.</p>
+    <form id="unlock-form">
+      <label for="passphrase">Shared passphrase</label>
+      <div class="passphrase-field"><input id="passphrase" name="password" type="password" autocomplete="current-password" maxlength="128" required aria-describedby="unlock-help unlock-error"><button id="show-passphrase" type="button" aria-pressed="false">Show</button></div>
+      <p id="unlock-help">Paste the passphrase shared with you. Spaces and dots between groups are optional.</p>
+      <p id="unlock-error" role="alert"></p>
+      <button id="unlock-submit" class="unlock-submit" type="submit">Unlock workspace</button>
+      <button id="cancel-unlock" type="button" hidden>Cancel</button>
+      <p id="unlock-status" role="status" aria-live="polite"></p>
+    </form>
+    <p class="unlock-note">Access lasts in this tab until you refresh or lock it. Downloaded diagrams and printed copies remain readable.</p>
+  </section>
+  <p class="unlock-footer">A shared workspace for product review.</p>
+</main>
+
+<div id="viewer" hidden>
+  <a class="skip" href="#main">Skip to workflow</a>
+  <header class="masthead">
+    <a class="identity" href="#overview"><span class="brand-symbol" aria-hidden="true">p.</span><span class="wordmark">Pactap<span>Direct</span></span></a>
+    <span class="identity-caption">Workflow review workspace</span>
+    <div class="workspace-status"><span class="draft-label">Policy review pending</span><span class="lane-label">India to USA</span></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Workflow navigation">
+      <div class="sidebar-heading"><h2>Buyer journey</h2><span>15 flows</span></div>
+      <p class="nav-intro">From first visit to fulfilment.</p>
+      <nav id="phase-nav" aria-label="Journey phases"></nav>
+      <div class="sidebar-foot"><strong>One source. Every branch.</strong><p>Maps and text steps share the same reviewed workflow.</p></div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <div class="mobile-navigation"><label for="phase-select">Journey phase</label><select id="phase-select"></select></div>
+      <header class="phase-header">
+        <div class="phase-title-row"><h1 id="phase-title" tabindex="-1">Buyer journey</h1><div class="pager"><button id="previous" type="button" aria-label="Previous diagram">Previous</button><button id="next" type="button" aria-label="Next diagram">Next</button></div></div>
+        <p id="phase-summary" class="summary"></p>
+        <div class="phase-meta"><p id="phase-number"></p><p id="phase-composition"></p></div>
+      </header>
+      <div class="review-boundary"><strong>Review draft</strong><span>This is a workflow specification, not a live ordering application. Publishing it does not approve its policies.</span></div>
+      <div class="toolbar" aria-label="Diagram controls">
+        <div class="view-controls"><button id="map-view" type="button" aria-pressed="true">Flow map</button><button id="text-view" type="button" aria-pressed="false">Text steps</button></div>
+        <div class="share-controls"><button id="copy-link" type="button">Copy link</button><button id="export" type="button">Save SVG</button><button id="print" type="button">Print</button></div>
+      </div>
+      <div class="workbench">
+        <div class="diagram-column">
+          <div id="map-tools" class="map-tools">
+            <p class="map-help" id="map-help">Select a step to inspect its details and branches.</p>
+            <div id="zoom-controls" class="zoom-controls"><button id="zoom-out" type="button" aria-label="Zoom out">−</button><output id="zoom-label" aria-live="polite">100%</output><button id="zoom-in" type="button" aria-label="Zoom in">+</button><button id="fit" type="button">Fit width</button><button id="actual" type="button">100%</button></div>
+          </div>
+          <div id="map-region" class="map-region" tabindex="0" role="region" aria-label="Scrollable workflow diagram"></div>
+          <section id="text-region" aria-label="Workflow text steps" hidden></section>
+          <div class="legend" aria-label="Diagram legend"><span><i class="decision-key" aria-hidden="true"></i>Decision</span><span><i class="step-key" aria-hidden="true"></i>Agreed / specified draft</span><span><i class="proposed-key" aria-hidden="true"></i>Proposed addition</span></div>
+        </div>
+        <aside id="inspector" class="inspector" aria-label="Step inspector"><div class="inspector-heading"><h2>Step details</h2><span id="step-position"></span></div><section id="selection" class="selection" aria-label="Selected step" aria-live="polite"></section></aside>
+      </div>
+      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      <div class="evidence-grid">
+        <details class="notes"><summary>Phase guidance & sources</summary><div class="evidence-body"><ul id="phase-notes"></ul><p id="source-label" class="source-label"></p></div></details>
+        <details class="review-record"><summary>Review & maintenance</summary><div id="review-record" class="evidence-body">Loading review record…</div></details>
+      </div>
+      <footer><span>Buyer experience · Product specification</span><span id="revision-label"></span></footer>
+    </main>
+  </div>
+  <noscript><p class="noscript">JavaScript is required to navigate the diagrams. This viewer contains review diagrams only; it does not collect orders or payments.</p></noscript>
+</div>
+</body>
+</html>
